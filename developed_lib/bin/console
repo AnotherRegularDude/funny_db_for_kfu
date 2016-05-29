@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'funny_db'
+
+# Here's i'll put fixtures, maybe.
+
+# Initialize
+
+require 'irb'
+IRB.start

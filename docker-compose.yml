@@ -1,0 +1,7 @@
+version: '2'
+services:
+  developed_lib:
+    build: ./developed_lib
+    command: bundler console
+    volumes:
+      - ./developed_lib:/developed_lib
