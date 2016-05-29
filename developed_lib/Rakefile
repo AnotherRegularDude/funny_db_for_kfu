@@ -1,9 +1,10 @@
 require 'bundler/gem_tasks'
 require 'rake/testtask'
 
-task default: :spec
-
 Rake::TestTask.new do |t|
-  t.libs << 'test/lib'
-  t.pattern = 'test/lib/*_test.rb'
+  t.libs << 'lib'
+  t.libs << 'test' # here is the test_helper
+  t.pattern = 'test/**/*_test.rb'
 end
+
+task default: :test

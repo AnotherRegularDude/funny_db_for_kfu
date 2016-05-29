@@ -1,4 +1,4 @@
-require 'test/test_helper'
+require 'test_helper'
 
 class TestFunnyDb < MiniTest::Test
   def test_i_work

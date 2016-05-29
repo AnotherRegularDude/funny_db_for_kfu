@@ -13,9 +13,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/VanyaZ15'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f|
-    f.match(%r{^(test|spec|features)/})
-  }
+  spec.files = Dir['lib/**/*'] + Dir['bin/*']
+  spec.files += Dir['[A-Z]*'] + Dir['test/**/*']
+  spec.files.reject! { |fn| fn.include? 'Dockerfile' }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
