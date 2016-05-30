@@ -1,13 +1,13 @@
 module FunnyDb
   class Manager
-    # TODO: Think about attribute readers
+    # TODO: Think about attribute readers: remove or not
     attr_reader :head
     attr_reader :body
     attr_reader :path_to_db
     attr_reader :oj_options
 
     def initialize(path_to_db, force_create = true)
-      @path_to_db = path_to_db
+      @path_to_db = path_to_db + '.db.json'
       declare_oj_options
 
       if File.exist? @path_to_db
@@ -24,7 +24,7 @@ module FunnyDb
 
     # TODO: Realise work with locked files
     def save_changes
-      File.open(path_to_db, 'rw') do |f|
+      File.open(path_to_db, 'w') do |f|
         refresh_hash_in_head
 
         f.write(jsonified_data)
@@ -48,7 +48,7 @@ module FunnyDb
     end
 
     def declare_oj_options
-      @oj_options = [indent: 2, symbol_keys: true, time_format: :ruby]
+      @oj_options = { indent: 2, symbol_keys: true, time_format: :ruby }
     end
 
     def composed_data
@@ -61,7 +61,7 @@ module FunnyDb
     end
 
     def jsonified_data
-      Oj.dump(composed_data)
+      Oj.dump(composed_data, oj_options)
     end
 
     def calc_hash_of_composed_data
