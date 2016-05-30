@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   # I want to make good development dependencies
   spec.add_development_dependency 'bundler', '~>1.12'
   spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rake-notes'
   spec.add_development_dependency 'minitest'
   spec.add_development_dependency 'minitest-reporters'
 

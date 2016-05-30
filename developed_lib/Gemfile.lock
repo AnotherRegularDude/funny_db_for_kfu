@@ -9,6 +9,7 @@ GEM
   specs:
     ansi (1.5.0)
     builder (3.2.2)
+    colored (1.2)
     minitest (5.9.0)
     minitest-reporters (1.1.9)
       ansi
@@ -17,6 +18,9 @@ GEM
       ruby-progressbar
     oj (2.15.1)
     rake (11.1.2)
+    rake-notes (0.2.0)
+      colored
+      rake
     ruby-progressbar (1.8.1)
 
 PLATFORMS
@@ -28,6 +32,7 @@ DEPENDENCIES
   minitest
   minitest-reporters
   rake
+  rake-notes
 
 BUNDLED WITH
    1.12.4
