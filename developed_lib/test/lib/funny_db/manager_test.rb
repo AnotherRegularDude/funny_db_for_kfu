@@ -57,6 +57,10 @@ class TestManager < MiniTest::Test
     assert_equal @buffered_default_structure, file_structure
   end
 
+  def test_manager_return_data_mapper_on_index
+    assert_instance_of FunnyDb::DataMapper, @manager_instance['selected_group']
+  end
+
   def teardown
     clear_tmp
   end

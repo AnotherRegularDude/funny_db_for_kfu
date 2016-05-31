@@ -3,6 +3,7 @@ module FunnyDb
     # TODO: Think about attribute readers: remove or not
     attr_reader :head
     attr_reader :body
+    attr_reader :changes_fixer
     attr_reader :path_to_db
     attr_reader :oj_options
 
@@ -20,6 +21,11 @@ module FunnyDb
       else
         raise IOError, 'Database not found'
       end
+    end
+
+    # TODO: Add functionality
+    def [](group_name)
+      DataMapper.new(group_name, self)
     end
 
     # TODO: Realise work with locked files
@@ -71,6 +77,10 @@ module FunnyDb
     def refresh_hash_in_head
       head[:hash] = ''
       head[:hash] = calc_hash_of_composed_data
+    end
+
+    def changed_data_callback(group_name, changed_data)
+      body[group_name] = Marshal.load(Marshal.dump(changed_data))
     end
   end
 end
