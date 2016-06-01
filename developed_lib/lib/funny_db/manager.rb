@@ -1,15 +1,15 @@
 module FunnyDb
   class Manager
+    OJ_OPTIONS = { symbol_keys: true, time_format: :ruby }.freeze
+
     # TODO: Think about attribute readers: remove or not
     attr_reader :head
     attr_reader :body
     attr_reader :changes_fixer
     attr_reader :path_to_db
-    attr_reader :oj_options
 
     def initialize(path_to_db, force_create = true)
       @path_to_db = path_to_db + '.db.json'
-      declare_oj_options
 
       if File.exist? @path_to_db
         # TODO: Make it work!
@@ -23,7 +23,6 @@ module FunnyDb
       end
     end
 
-    # TODO: Add functionality
     def [](group_name)
       DataMapper.new(group_name, self)
     end
@@ -42,19 +41,13 @@ module FunnyDb
     def init_head
       @head = {
         hash: '',
-        table_count: 0,
-        locked: false,
-        table_typings: [
-        ]
+        group_count: 0,
+        locked: false
       }
     end
 
     def init_body
       @body = {}
-    end
-
-    def declare_oj_options
-      @oj_options = { indent: 2, symbol_keys: true, time_format: :ruby }
     end
 
     def composed_data
@@ -67,7 +60,7 @@ module FunnyDb
     end
 
     def jsonified_data
-      Oj.dump(composed_data, oj_options)
+      Oj.dump(composed_data, OJ_OPTIONS)
     end
 
     def calc_hash_of_composed_data

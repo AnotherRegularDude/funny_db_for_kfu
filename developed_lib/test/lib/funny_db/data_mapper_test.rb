@@ -12,9 +12,9 @@ class TestDataMapper < MiniTest::Test
   end
 
   def test_insert_list_of_data
-    final_len = @data_mapper.insert_list(@list_to_insert)
+    last_index = @data_mapper.insert_list(@list_to_insert)
 
-    assert_equal 2, final_len
+    assert_equal 1, last_index
   end
 
   def test_register_changes_method

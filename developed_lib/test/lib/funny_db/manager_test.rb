@@ -9,10 +9,8 @@ class TestManager < MiniTest::Test
   def default_head
     {
       hash: '',
-      table_count: 0,
-      locked: false,
-      table_typings: [
-      ]
+      group_count: 0,
+      locked: false
     }
   end
 
@@ -56,7 +54,7 @@ class TestManager < MiniTest::Test
   def test_db_file_struct_corresponds_to_default_struct
     file_structure = Oj.load(
       File.open(db_path('test_db', false)).read,
-      @manager_instance.oj_options
+      FunnyDb::Manager::OJ_OPTIONS
     )
 
     assert_equal default_structure, file_structure
@@ -76,7 +74,7 @@ class TestManager < MiniTest::Test
 
     file_structure = Oj.load(
       File.open(db_path('test_db', false)).read,
-      @manager_instance.oj_options
+      FunnyDb::Manager::OJ_OPTIONS
     )
 
     assert_equal struct_with_expected_group, file_structure

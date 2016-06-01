@@ -7,6 +7,14 @@ module FunnyDb
       @father = initializer
     end
 
+    def [](index)
+      @changed_data[index]
+    end
+
+    def last_index
+      @changed_data.length - 1
+    end
+
     def insert_one(data_to_insert)
       unless data_to_insert.is_a? Hash
         raise DataMapperError, 'Inserted data must be a hash'
@@ -16,13 +24,13 @@ module FunnyDb
 
       @changed_data.push(data_to_insert)
 
-      @changed_data.length
+      last_index
     end
 
     def insert_list(array_of_data_to_insert)
       array_of_data_to_insert.each { |ins_data| insert_one(ins_data) }
 
-      @changed_data.length
+      last_index
     end
 
     def drop_all_session_changes
