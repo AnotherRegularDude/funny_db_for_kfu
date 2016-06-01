@@ -2,10 +2,7 @@ require 'test_helper'
 
 class TestDataMapper < MiniTest::Test
   def setup
-    @mi_holder = OpenStruct.new
-    @mi_holder.instance = FunnyDb::Manager.new(db_path)
-    @mi_holder.head = @mi_holder.instance.instance_variable_get(:@head)
-    @mi_holder.body = @mi_holder.instance.instance_variable_get(:@body)
+    @mi_holder = structurized_manager_instance_init
 
     @data_mapper = FunnyDb::DataMapper.new('maptests', @mi_holder.instance)
     @list_to_insert = [{ name: 'test1' }, { name: 'test2' }]
