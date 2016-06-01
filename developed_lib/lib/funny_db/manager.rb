@@ -2,12 +2,6 @@ module FunnyDb
   class Manager
     OJ_OPTIONS = { symbol_keys: true, time_format: :ruby }.freeze
 
-    # TODO: Think about attribute readers: remove or not
-    attr_reader :head
-    attr_reader :body
-    attr_reader :changes_fixer
-    attr_reader :path_to_db
-
     def initialize(path_to_db, force_create = true)
       @path_to_db = path_to_db + '.db.json'
 
@@ -29,7 +23,7 @@ module FunnyDb
 
     # TODO: Realise work with locked files
     def save_changes
-      File.open(path_to_db, 'w') do |f|
+      File.open(@path_to_db, 'w') do |f|
         refresh_hash_in_head
 
         f.write(jsonified_data)
@@ -52,8 +46,8 @@ module FunnyDb
 
     def composed_data
       result = {
-        head: head,
-        body: body
+        head: @head,
+        body: @body
       }
 
       result
@@ -68,12 +62,12 @@ module FunnyDb
     end
 
     def refresh_hash_in_head
-      head[:hash] = ''
-      head[:hash] = calc_hash_of_composed_data
+      @head[:hash] = ''
+      @head[:hash] = calc_hash_of_composed_data
     end
 
     def changed_data_callback(group_name, changed_data)
-      body[group_name] = Marshal.load(Marshal.dump(changed_data))
+      @body[group_name] = Marshal.load(Marshal.dump(changed_data))
     end
   end
 end

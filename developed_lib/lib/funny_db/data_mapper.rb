@@ -10,9 +10,11 @@ module FunnyDb
   class DataMapper
     def initialize(group_name, initializer)
       @name = group_name.to_sym
-      @staged_data = initializer.body.fetch(@name, [])
-      @changed_data = copy_staged_data
       @father = initializer
+      @father_body = @father.instance_variable_get(:@body)
+
+      @staged_data = @father_body.fetch(@name, [])
+      @changed_data = copy_staged_data
     end
 
     def [](index)
