@@ -1,6 +1,5 @@
 require 'digest'
 require 'oj'
-require 'marshal'
 
 require 'funny_db/version'
 require 'funny_db/custom_errors'

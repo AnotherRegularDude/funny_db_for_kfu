@@ -1,10 +1,8 @@
 module FunnyDb
   class DataMapper
-    attr_accessor
-
     def initialize(group_name, initializer)
       @name = group_name.to_sym
-      @staged_data = initializer.body.fetch(@name.to_sym, [])
+      @staged_data = initializer.body.fetch(@name, [])
       @changed_data = copy_staged_data
       @father = initializer
     end
@@ -33,7 +31,7 @@ module FunnyDb
     end
 
     def register_all_changes
-      @father.send(:changed_data_callback, [@name, @changed_data])
+      @father.send(:changed_data_callback, @name, @changed_data)
     end
 
     private
