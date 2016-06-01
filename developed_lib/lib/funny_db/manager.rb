@@ -6,7 +6,7 @@ module FunnyDb
       @path_to_db = path_to_db + '.db.json'
 
       if File.exist? @path_to_db
-        # TODO: Make it work!
+        load_data_from_file
       elsif force_create
         init_head
         init_body
@@ -55,6 +55,15 @@ module FunnyDb
 
     def jsonified_data
       Oj.dump(composed_data, OJ_OPTIONS)
+    end
+
+    def load_data_from_file
+      File.open(@path_to_db, 'r') do |f|
+        buf_data = Oj.load(f.read, OJ_OPTIONS)
+
+        @head = buf_data[:head]
+        @body = buf_data[:body]
+      end
     end
 
     def calc_hash_of_composed_data

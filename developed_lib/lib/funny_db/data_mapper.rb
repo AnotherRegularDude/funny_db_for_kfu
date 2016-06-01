@@ -32,7 +32,7 @@ module FunnyDb
 
       return 0 if data_to_insert == {}
 
-      @changed_data.push(data_to_insert)
+      @changed_data.push(Marshal.load(Marshal.dump(data_to_insert)))
 
       last_index
     end
