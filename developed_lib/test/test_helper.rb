@@ -1,6 +1,8 @@
 require 'funny_db'
+
 require 'fileutils'
 require 'ostruct'
+require 'digest'
 
 require 'minitest/reporters'
 
@@ -24,6 +26,15 @@ def db_path(db_name = 'test_db', for_constructor = true)
                   end
 
   File.join(TEST_TMP, final_db_name)
+end
+
+def structurized_manager_instance_init
+  mi_holder = OpenStruct.new
+  mi_holder.instance = FunnyDb::Manager.new(db_path)
+  mi_holder.head = mi_holder.instance.instance_variable_get(:@head)
+  mi_holder.body = mi_holder.instance.instance_variable_get(:@body)
+
+  mi_holder
 end
 
 require 'minitest/autorun'
