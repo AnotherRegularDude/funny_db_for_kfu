@@ -1,7 +1,16 @@
 version: '2'
 services:
   developed_lib:
-    build: ./developed_lib
+    build: ./developed_lib/.
     command: bundle console
     volumes:
       - ./developed_lib:/developed_lib
+  example_of_using:
+    build: ./example_of_using/.
+    command: runner.sh
+    depends_on:
+      - developed_lib
+    volumes:
+      - ./example_of_using:/example_of_using
+    volumes_from:
+      - developed_lib:ro
