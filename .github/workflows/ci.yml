@@ -7,14 +7,17 @@ on:
 
 jobs:
   test:
-    name: Ruby 3.4
+    strategy:
+      matrix:
+        ruby: [3.2, 3.3, 3.4]
+    name: Ruby ${{ matrix.ruby }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Ruby 3.4
+      - name: Set up Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run Linter
         run: bundle exec rubocop
