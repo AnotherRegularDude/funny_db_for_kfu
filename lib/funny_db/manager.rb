@@ -6,30 +6,13 @@ module FunnyDb
     OJ_OPTIONS = { symbol_keys: true, time_format: :ruby }.freeze
 
     # @param path_to_db [String] base filesystem path without extension
-    DEFAULT_FORCE_CREATE = true
-    FORCE_CREATE_UNSET = Object.new.freeze
-    private_constant :FORCE_CREATE_UNSET
-
     # @param force_create [Boolean] whether to create a database file when none exists
-    #   The parameter can be passed positionally for backwards compatibility or
-    #   as a keyword argument.
-    def initialize(path_to_db, positional_force_create = FORCE_CREATE_UNSET, force_create: FORCE_CREATE_UNSET)
-      if positional_force_create != FORCE_CREATE_UNSET && force_create != FORCE_CREATE_UNSET
-        raise ArgumentError, "force_create passed both positionally and as a keyword"
-      end
-
-      force_create_value = if force_create != FORCE_CREATE_UNSET
-                             force_create
-                           elsif positional_force_create != FORCE_CREATE_UNSET
-                             positional_force_create
-                           else
-                             DEFAULT_FORCE_CREATE
-                           end
+    def initialize(path_to_db, force_create: true)
       @path_to_db = "#{path_to_db}.db.json"
 
       if File.exist? @path_to_db
         load_data_from_file
-      elsif force_create_value
+      elsif force_create
         init_head
         init_body
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    funny_db (0.0.1)
+    funny_db (1.0.0)
       oj
 
 GEM
