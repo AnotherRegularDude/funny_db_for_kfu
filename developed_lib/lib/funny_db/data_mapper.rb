@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This class realize CRUD operations on database's items
 # C - #insert_one(data_to_insert) and #insert_list(array_of_data_to_insert),
@@ -7,6 +9,7 @@
 # U - update_at(index), where index - number from 0 to (infinity and beyond)
 # D - delete_at(index), where index - number from 0 to (infinity and beyond)
 module FunnyDb
+  # Provides CRUD operations on a subset of FunnyDb records.
   class DataMapper
     def initialize(group_name, initializer)
       @name = group_name.to_sym
@@ -26,9 +29,7 @@ module FunnyDb
     end
 
     def insert_one(data_to_insert)
-      unless data_to_insert.is_a? Hash
-        raise DataMapperError, 'Inserted data must be a hash'
-      end
+      raise DataMapperError, 'Inserted data must be a hash' unless data_to_insert.is_a?(Hash)
 
       return 0 if data_to_insert == {}
 
@@ -46,9 +47,7 @@ module FunnyDb
     def update_at(index)
       yield @changed_data[index]
 
-      unless @changed_data[index].is_a? Hash
-        raise DataMapperError, 'Changed item must be a hash'
-      end
+      raise DataMapperError, 'Changed item must be a hash' unless @changed_data[index].is_a?(Hash)
 
       Marshal.load(Marshal.dump(@changed_data[index]))
     end

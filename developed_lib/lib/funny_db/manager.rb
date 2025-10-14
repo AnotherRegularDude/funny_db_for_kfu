@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module FunnyDb
+  # Manages persistence for FunnyDb databases on disk.
   class Manager
     OJ_OPTIONS = { symbol_keys: true, time_format: :ruby }.freeze
 
-    def initialize(path_to_db, force_create = true)
-      @path_to_db = path_to_db + '.db.json'
+    def initialize(path_to_db, force_create: true)
+      @path_to_db = "#{path_to_db}.db.json"
 
       if File.exist? @path_to_db
         load_data_from_file
@@ -45,12 +48,10 @@ module FunnyDb
     end
 
     def composed_data
-      result = {
+      {
         head: @head,
         body: @body
       }
-
-      result
     end
 
     def jsonified_data
