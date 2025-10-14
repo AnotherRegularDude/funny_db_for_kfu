@@ -1,9 +1,14 @@
+# frozen_string_literal: true
+
 module FunnyDb
+  # Manages persistence for FunnyDb databases on disk.
   class Manager
     OJ_OPTIONS = { symbol_keys: true, time_format: :ruby }.freeze
 
-    def initialize(path_to_db, force_create = true)
-      @path_to_db = path_to_db + '.db.json'
+    # @param path_to_db [String] base filesystem path without extension
+    # @param force_create [Boolean] whether to create a database file when none exists
+    def initialize(path_to_db, force_create: true)
+      @path_to_db = "#{path_to_db}.db.json"
 
       if File.exist? @path_to_db
         load_data_from_file
@@ -13,17 +18,21 @@ module FunnyDb
 
         save_changes
       else
-        raise IOError, 'Database not found'
+        raise IOError, "Database not found"
       end
     end
 
+    # @param group_name [String, Symbol] logical collection name
+    # @return [FunnyDb::DataMapper] mapper scoped to the requested collection
     def [](group_name)
       DataMapper.new(group_name, self)
     end
 
-    # TODO: Realise work with locked files
+    # @todo Realise work with locked files
+    #
+    # @return [void]
     def save_changes
-      File.open(@path_to_db, 'w') do |f|
+      File.open(@path_to_db, "w") do |f|
         refresh_hash_in_head
 
         f.write(jsonified_data)
@@ -34,9 +43,9 @@ module FunnyDb
 
     def init_head
       @head = {
-        hash: '',
+        hash: "",
         group_count: 0,
-        locked: false
+        locked: false,
       }
     end
 
@@ -45,12 +54,10 @@ module FunnyDb
     end
 
     def composed_data
-      result = {
+      {
         head: @head,
-        body: @body
+        body: @body,
       }
-
-      result
     end
 
     def jsonified_data
@@ -58,7 +65,7 @@ module FunnyDb
     end
 
     def load_data_from_file
-      File.open(@path_to_db, 'r') do |f|
+      File.open(@path_to_db, "r") do |f|
         buf_data = Oj.load(f.read, OJ_OPTIONS)
 
         @head = buf_data[:head]
@@ -71,10 +78,13 @@ module FunnyDb
     end
 
     def refresh_hash_in_head
-      @head[:hash] = ''
+      @head[:hash] = ""
       @head[:hash] = calc_hash_of_composed_data
     end
 
+    # @param group_name [Symbol]
+    # @param changed_data [Array<Hash>]
+    # @return [void]
     def changed_data_callback(group_name, changed_data)
       @body[group_name] = Marshal.load(Marshal.dump(changed_data))
     end
