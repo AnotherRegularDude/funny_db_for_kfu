@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-
-RSpec.describe FunnyDb::DataMapper do
+describe FunnyDb::DataMapper do
   let(:data_mapper_setup) { structurized_data_mapper("maptests") }
   let(:data_mapper) { data_mapper_setup.mapper }
   let(:mi_holder) { data_mapper_setup.holder }
@@ -20,48 +18,60 @@ RSpec.describe FunnyDb::DataMapper do
   end
 
   describe "#register_all_changes" do
-    it "persists the staged changes into the manager body" do
+    before do
       data_mapper.insert_list(list_to_insert)
       data_mapper.register_all_changes
+    end
 
+    it "persists the staged changes into the manager body" do
       expect(mi_holder.body[:maptests]).to eq(list_to_insert)
     end
   end
 
   describe "#drop_all_session_changes" do
-    it "clears staged changes" do
+    before do
       data_mapper.insert_list(list_to_insert)
       data_mapper.register_all_changes
       data_mapper.drop_all_session_changes
+    end
 
+    it "clears staged changes" do
       expect(mi_holder.body[:maptests]).to be_empty
     end
   end
 
   describe "#update_at" do
-    it "updates an item and persists the change" do
+    let(:expected_list) do
+      [
+        { name: "changed", foo: "bar" },
+        { name: "test2", foo: "bar" },
+      ]
+    end
+
+    before do
       data_mapper.insert_list(list_to_insert)
       data_mapper.register_all_changes
 
       data_mapper.update_at(0) { |el| el[:name] = "changed" }
       data_mapper.register_all_changes
+    end
 
-      list_to_insert[0][:name] = "changed"
-
-      expect(mi_holder.body[:maptests]).to eq(list_to_insert)
+    it "updates an item and persists the change" do
+      expect(mi_holder.body[:maptests]).to eq(expected_list)
     end
   end
 
   describe "#delete_at" do
-    it "removes an item from the collection" do
+    before do
       data_mapper.insert_list(list_to_insert)
       data_mapper.register_all_changes
 
       data_mapper.delete_at(0)
       data_mapper.register_all_changes
+    end
 
+    it "removes an item from the collection" do
       expect(data_mapper.last_index).to eq(0)
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

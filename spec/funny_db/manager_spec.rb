@@ -1,60 +1,8 @@
 # frozen_string_literal: true
 
-require "spec_helper"
-require "oj"
-
-RSpec.describe FunnyDb::Manager do
-  let!(:mi_holder) { structurized_manager_instance_init }
-  let(:manager) { mi_holder.instance }
-
-  def default_head
-    {
-      hash: "",
-      group_count: 0,
-      locked: false,
-    }
-  end
-
-  def default_body
-    {}
-  end
-
-  def calc_hash(hashed_obj)
-    Digest::SHA256.base64digest(hashed_obj.to_s)
-  end
-
-  def default_structure
-    result = {
-      head: default_head,
-      body: default_body,
-    }
-
-    result[:head][:hash] = calc_hash(result)
-
-    result
-  end
-
-  def default_data_to_insert
-    { name: "test1" }
-  end
-
-  def default_struct_with_expected_group
-    result = default_structure
-
-    result[:head][:hash] = ""
-    result[:body][:managertests] = [default_data_to_insert]
-
-    result[:head][:hash] = calc_hash(result)
-
-    result
-  end
-
-  def jsonify_db_file(db_name = "test_db")
-    Oj.load(
-      File.read(db_path(db_name, for_constructor: false)),
-      FunnyDb::Manager::OJ_OPTIONS,
-    )
-  end
+describe FunnyDb::Manager do
+  let!(:manager_fixture) { structurized_manager_instance_init }
+  let(:manager) { manager_fixture.instance }
 
   describe "#initialize" do
     it "creates a new database file" do
@@ -66,13 +14,15 @@ RSpec.describe FunnyDb::Manager do
   end
 
   describe "#save_changes" do
-    it "persists the expected structure to disk" do
+    before do
       managertests = manager["managertests"]
 
       managertests.insert_one(default_data_to_insert)
       managertests.register_all_changes
       manager.save_changes
+    end
 
+    it "persists the expected structure to disk" do
       expect(jsonify_db_file).to eq(default_struct_with_expected_group)
     end
   end
@@ -89,4 +39,3 @@ RSpec.describe FunnyDb::Manager do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
