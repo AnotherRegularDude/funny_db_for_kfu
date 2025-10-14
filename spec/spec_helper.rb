@@ -1,20 +1,21 @@
 # frozen_string_literal: true
 
-require 'funny_db'
-require 'fileutils'
-require 'ostruct'
-require 'digest'
-require 'rspec'
+require "funny_db"
+require "fileutils"
+require "digest"
+require "rspec"
 
 module SpecHelpers
-  SPEC_TMP = File.expand_path('tmp', __dir__)
+  SPEC_TMP = File.expand_path("tmp", __dir__)
+  ManagerFixture = Struct.new(:instance, :head, :body)
+  MapperFixture = Struct.new(:holder, :mapper)
 
   def clear_tmp
     SpecHelpers.ensure_tmp_exists
-    FileUtils.rm_rf(Dir[File.join(SPEC_TMP, '*')])
+    FileUtils.rm_rf(Dir[File.join(SPEC_TMP, "*")])
   end
 
-  def db_path(db_name = 'test_db', for_constructor: true)
+  def db_path(db_name = "test_db", for_constructor: true)
     SpecHelpers.ensure_tmp_exists
     final_db_name = for_constructor ? db_name : "#{db_name}.db.json"
     File.join(SPEC_TMP, final_db_name)
@@ -22,18 +23,18 @@ module SpecHelpers
 
   def structurized_manager_instance_init
     SpecHelpers.ensure_tmp_exists
-    mi_holder = OpenStruct.new
-    mi_holder.instance = FunnyDb::Manager.new(db_path)
-    mi_holder.head = mi_holder.instance.instance_variable_get(:@head)
-    mi_holder.body = mi_holder.instance.instance_variable_get(:@body)
-    mi_holder
+    manager_instance = FunnyDb::Manager.new(db_path)
+    head = manager_instance.instance_variable_get(:@head)
+    body = manager_instance.instance_variable_get(:@body)
+
+    ManagerFixture.new(manager_instance, head, body)
   end
 
-  def structurized_data_mapper(mapper_name = 'maptests')
+  def structurized_data_mapper(mapper_name = "maptests")
     mi_holder = structurized_manager_instance_init
     mapper = FunnyDb::DataMapper.new(mapper_name, mi_holder.instance)
 
-    OpenStruct.new(holder: mi_holder, mapper: mapper)
+    MapperFixture.new(mi_holder, mapper)
   end
 
   module_function
@@ -51,6 +52,6 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) { SpecHelpers.ensure_tmp_exists }
-  config.before(:each) { clear_tmp }
-  config.after(:each) { clear_tmp }
+  config.before { clear_tmp }
+  config.after { clear_tmp }
 end

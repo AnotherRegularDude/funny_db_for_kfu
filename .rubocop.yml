@@ -1,5 +1,5 @@
 inherit_gem:
-  rubocop-config-umbrellio: config/default.yml
+  rubocop-config-umbrellio: lib/rubocop.yml
 
 inherit_mode:
   merge:

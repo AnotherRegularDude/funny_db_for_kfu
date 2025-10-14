@@ -7,19 +7,16 @@ on:
 
 jobs:
   test:
-    name: Ruby 3.4.7
+    name: Ruby 3.4
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: developed_lib
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Ruby 3.4.7
+      - name: Set up Ruby 3.4
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4.7'
+          ruby-version: 3.4
           bundler-cache: true
-      - name: Run RuboCop
+      - name: Run Linter
         run: bundle exec rubocop
-      - name: Run RSpec
+      - name: Run Tests
         run: bundle exec rspec
