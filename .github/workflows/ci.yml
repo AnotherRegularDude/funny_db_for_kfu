@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ruby_23:
+    name: Ruby 2.3
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: developed_lib
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby 2.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.3'
+          bundler: '1.17.3'
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+      - name: Run lint
+        run: |
+          git ls-files -z '*.rb' | xargs -0 -n1 bundle exec ruby -c
+      - name: Run tests
+        run: bundle exec rake test
+
+  ruby_latest:
+    name: Ruby latest (allowed failures)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        ruby-version: ['3.3', 'ruby-head']
+    defaults:
+      run:
+        working-directory: developed_lib
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler: '1.17.3'
+      - name: Install dependencies
+        run: bundle install --jobs 4 --retry 3
+      - name: Run lint
+        run: |
+          git ls-files -z '*.rb' | xargs -0 -n1 bundle exec ruby -c
+      - name: Run tests
+        run: bundle exec rake test
